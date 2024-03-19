@@ -1,27 +1,130 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <queue>
 #include <string>
 #include <algorithm> // for default sort
-#include <random> //for random
-#include <chrono> //for time
+#include <random>	// for random
+#include <chrono>  // for time
+
 
 std::ifstream in("tests.txt");
-//std::ofstream out("results2.txt");
+//std::ofstream out("results.txt");
 
-//rezultatele sunt doar pentru inputuri complet random
-//ar trebuii sa verificam si pt inputuri semi-sortate
 
-//de asemenea cred ca putem optimiza mergesortul cu niste referinte
+typedef void (*FunctionPointer)(std::vector<int>&); // define FunctionPointer datatype 
+			// -> pointing at functions which return void and have a vector<int> reference as argument
 
-//desi am facut template la functii momentan merge doar pe int din cauza function pointerului
-//template<typename Type>
-typedef void (*FunctionPointer)(std::vector<int>&);
-std::vector<std::pair<std::string,FunctionPointer>> sorts;
+// vector with pairs ( FunctionName, FunctionPointer )  -> void functionName(vector<int>&) 
+std::vector<std::pair<std::string,FunctionPointer>> sorts; 
+
+// vector with pairs ( N, MAX ) 
 std::vector<std::pair<int, long long int>> tests;
 
 
+namespace Bubble {
+
+	template <typename Type>
+	void swap(Type& x, Type& y) {
+		Type z = x;
+		x = y;
+		y = z;
+	}
+
+	template<typename Type>
+	void bubbleSort(std::vector<Type>& vec) {
+		bool swapped = true;
+		while (swapped) {
+			swapped = false;
+			for (int i = 0; i < vec.size() - 1; i++) {
+				if (vec[i] > vec[i + 1]) {
+					swap(vec[i], vec[i + 1]);
+					swapped = true;
+				}
+			}
+		}
+	}
+
+	template<typename Type>
+	void bubbleSort2(std::vector<Type>& vec) {
+		for (int i = 0; i < vec.size(); i++) {
+			for (int j = i + 1; j < vec.size(); j++) {
+				if (vec[i] > vec[j]) {
+					swap(vec[i], vec[j]);
+				}
+			}
+		}
+	}
+
+}
+namespace Insertion {
+
+	template <typename Type>
+	void insertionSort(std::vector<Type>& vec) {
+		for (int i = 1; i < vec.size(); i++) {
+			int j = i - 1;
+			Type x = vec[i];
+			while (j >= 0 && x < vec[j]) {
+				vec[j + 1] = vec[j];
+				j--;
+			}
+			vec[j + 1] = x;
+		}
+	}
+
+	template <typename Type>
+	void shellSort(std::vector<Type>& vec) {
+		for (int gap = vec.size() / 2; gap > 0; gap /= 2) {
+			for (int i = gap; i < vec.size(); i++) {
+				int j = i - gap;
+				Type x = vec[i];
+				while (j >= 0 && x < vec[j]) {
+					vec[j + gap] = vec[j];
+					j -= gap;
+				}
+				vec[j + gap] = x;
+			}
+		}
+	}
+
+}
+namespace Quick {
+	
+	template <typename Type>
+	void swap(Type& x, Type& y) {
+		Type z = x;
+		x = y;
+		y = z;
+	}
+
+	template <typename Type>
+	void quick_sort(std::vector<Type>& vec, int l, int r) {
+		if (l < r) {
+			int pivot = r; // pivot selection should be made random
+			int j = l - 1;
+			for (int i = l; i < r; i++) {
+				if (vec[i] < vec[pivot]) {
+					j++;
+					swap(vec[i], vec[j]);
+				}
+			}
+			j++;
+			swap(vec[pivot], vec[j]);
+			// j is the partition point
+			quick_sort(vec, l, j - 1);
+			quick_sort(vec, j + 1, r);
+		}
+	}
+
+	template <typename Type>
+	void quickSort(std::vector<Type>& vec) {
+		// we need this function, beacause our FunctionPointer points only to functions of this type
+		quick_sort(vec, 0, vec.size() - 1);
+	}
+
+}
 namespace Merge {
+
 	template <typename Type>
 	std::vector<Type> merge(std::vector<Type>& v1, std::vector<Type>& v2) {
 		std::vector<Type> vec;
@@ -51,96 +154,30 @@ namespace Merge {
 	std::vector<Type> merge_sort(std::vector<Type>& vec, int l, int r) {
 		std::vector<Type> v1, v2;
 		if (l < r) {
-			int mij = (l + r) / 2;
-			v1 = merge_sort(vec, l, mij);
-			v2 = merge_sort(vec, mij + 1, r);
+			int mid = l + ((r - l) / 2); // finding the mid without overflow
+			v1 = merge_sort(vec, l, mid);
+			v2 = merge_sort(vec, mid + 1, r);
 			return merge(v1, v2);
-			//return merge(merge_sort(vec, l, mij), merge_sort(vec, mij + 1, r));
 		}
-		else {;
-			return {vec[l]};
+		else {
+			return { vec[l] }; // a vector with just one element
 		}
 	}
 
 	template <typename Type>
 	void mergeSort(std::vector<Type>& vec) {
-		vec = merge_sort(vec,0,vec.size()-1);
+		// we need this function, beacause our FunctionPointer points only to functions of this type
+		vec = merge_sort(vec, 0, vec.size() - 1);
 	}
-}
-namespace Quick {
-	template <typename Type>
-	void swap(Type& x, Type& y) {
-		Type z = x;
-		x = y;
-		y = z;
-	}
-
-	template <typename Type>
-	void quick_sort(std::vector<Type>& vec, int l, int r) {
-		if (l < r) {
-			int pivot = r; //pivot selection
-			int j = l - 1;
-			for (int i = l; i < r; i++) {
-				if (vec[i] < vec[pivot]) {
-					j++;
-					swap(vec[i], vec[j]);
-				}
-			}
-			j++;
-			swap(vec[pivot], vec[j]);
-
-			quick_sort(vec, l, j - 1);
-			quick_sort(vec, j + 1, r);
-		}
-	}
-
-	template <typename Type>
-	void quickSort(std::vector<Type>& vec) {
-		quick_sort(vec, 0, vec.size() - 1);
-	}
-}
-namespace Bubble {
-	template <typename Type>
-	void swap(Type& x, Type& y) {
-		Type z = x;
-		x = y;
-		y = z;
-	} 
-	
-	template<typename Type>
-	void bubbleSort(std::vector<Type>& vec) {
-		bool swapped = true;
-		while (swapped) {
-			swapped = false;
-			for (int i = 0; i < vec.size() - 1; i++) {
-				if (vec[i] > vec[i+1]) {
-					swap(vec[i], vec[i+1]);
-					swapped = true;
-				}
-			}
-		}
-	}
-
-	template<typename Type>
-	void bubbleSort2(std::vector<Type>& vec) {
-		for (int i = 0; i < vec.size(); i++) {
-			for (int j = i + 1; j < vec.size(); j++) {
-				if (vec[i] > vec[j]) {
-					swap(vec[i], vec[j]);
-				}
-			}
-		}
-	}
-
 }
 namespace Heap {
+	
 	template <typename Type>
 	class Heap {
-	private:
-		// this is a min heap
-		std::vector<Type> heap;
+	private:						
+		std::vector<Type> heap;		// this is a min heap data structure
 	public:
-		Heap() : heap{ 0 } {}
+		Heap() : heap{ 0 } {}		// the indexing will start from 1 
 
 		void swap(Type& x, Type& y) {
 			Type z = x;
@@ -148,23 +185,25 @@ namespace Heap {
 			y = z;
 		}
 
-		Type pop() {
-			Type x = heap[1];
+		Type pop() {				// returning and deleting the min element
+			Type x = heap[1];		
+
+			swap(heap[1], heap[heap.size() - 1]);		 // moving the first element to the last position
+			heap.erase(heap.begin() + heap.size() - 1);  // deleting it
+			
 			int ind = 1;
 			int son = 2;
-			swap(heap[1], heap[heap.size() - 1]);
-			heap.erase(heap.begin() + heap.size() - 1);
 			if (son < heap.size()) {
 				if (son + 1 < heap.size() && heap[son] > heap[son + 1]) {
-					son++;
+					son++;  // if there exist a second son that has a lower value we take him
 				}
 				while (heap[son] < heap[ind]) {
 					swap(heap[son], heap[ind]);
 					ind = son;
 					son = ind * 2;
-					if (son >= heap.size()) { break; }
+					if (son >= heap.size()) { break; }  // we reached the end
 					if (son + 1 < heap.size() && heap[son] > heap[son + 1]) {
-						son++;
+						son++;	// if there exist a second son that has a lower value we take him
 					}
 				}
 			}
@@ -184,7 +223,7 @@ namespace Heap {
 
 	template <typename Type>
 	void heapSort(std::vector<Type>& vec) {
-		Heap<Type> heap;
+		Heap<Type> heap; 
 		for (int i = 0; i < vec.size(); i++) {
 			heap.add(vec[i]);
 		}
@@ -193,36 +232,178 @@ namespace Heap {
 		}
 	}
 }
-namespace Insertion {
+namespace Radix {
 	
 	template <typename Type>
-	void insertionSort(std::vector<Type>& vec) {
+	void prefix_sum(std::vector<Type>& vec) {
 		for (int i = 1; i < vec.size(); i++) {
-			int j = i - 1;
-			Type x = vec[i];
-			while (j >= 0 && x < vec[j]) {
-				vec[j + 1] = vec[j];
-				j--;
-			}
-			vec[j + 1] = x;
+			vec[i] = vec[i] + vec[i - 1];
 		}
 	}
 
 	template <typename Type>
-	void shellSort(std::vector<Type>& vec) {
-		for (int gap = vec.size() / 2; gap > 0; gap /= 2) {
-			for (int i = gap; i < vec.size(); i++) {
-				int j = i - gap;
-				Type x = vec[i];
-				while (j >= 0 && x < vec[j]) {
-					vec[j + gap] = vec[j];
-					j-=gap;
-				}
-				vec[j + gap] = x;
+	void radixSortCounts(std::vector<Type>& vec) {
+		std::vector<int> counts(10, 0);
+		std::vector<Type> aux(vec.size());
+		long long mask = 10;
+		while (true) {
+			counts = std::vector<int>(10, 0);
+			for (int i = 0; i < vec.size();i++) {
+				int digit = (vec[i] % mask) / (mask/10);
+				counts[digit]++;
 			}
+			if (counts[0] == vec.size()) { break; }
+			prefix_sum(counts);
+			for (int i = vec.size() - 1; i >= 0; i--) {
+				int digit = (vec[i] % mask) / (mask / 10);
+				counts[digit]--;
+				aux[counts[digit]] = vec[i];
+			}
+			vec = aux;
+			mask *= 10;
 		}
 	}
+
+	template <typename Type>	//it seems that this is not semnificativley faster, so we won't use it
+	void radixSortCounts2(std::vector<Type>& vec) {
+		std::vector<int> counts(10, 0);
+		std::vector<Type> aux(vec.size());
+		long long mask = 10;
+		while (true) {
+			counts = std::vector<int>(10, 0);
+			for (int i = 0; i < vec.size(); i++) {
+				int digit = (vec[i] % mask) / (mask / 10);
+				counts[digit]++;
+			}
+			if (counts[0] == vec.size()) { break; }
+			prefix_sum(counts);
+			for (int i = vec.size() - 1; i >= 0; i--) {
+				int digit = (vec[i] % mask) / (mask / 10);
+				counts[digit]--;
+				aux[counts[digit]] = vec[i];
+			}
+			mask *= 10;
+			//to prevent redundant copying we will compute the next iteration from aux
+			counts = std::vector<int>(10, 0);
+			for (int i = 0; i < aux.size(); i++) {
+				int digit = (aux[i] % mask) / (mask / 10);
+				//std::cout << digit << std::endl;
+				counts[digit]++;
+			}
+			if (counts[0] == aux.size()) { vec = aux; break; }
+			prefix_sum(counts);
+			for (int i = aux.size() - 1; i >= 0; i--) {
+				int digit = (aux[i] % mask) / (mask / 10);
+				counts[digit]--;
+				vec[counts[digit]] = aux[i];
+			}
+			mask *= 10;
+		}
+	}
+
+	template <typename Type>	// 5 times slower than the vector variant, so we won't use it
+	void radixSortBucketsQueue(std::vector<Type>& vec) {
+		std::vector<std::queue<Type>> buckets(10);
+		long long mask = 10;
+		bool finished = false;
+		while (!finished) {
+			finished = true;
+			for (int i = 0; i < vec.size(); i++) {
+				int digit = (vec[i] % mask) / (mask / 10);
+				buckets[digit].push(vec[i]);
+			}
+			int idx = 0;
+			for (int i = 0; i < vec.size(); i++) {
+				while (buckets[idx].empty()) { idx++; }
+				vec[i] = buckets[idx].front();
+				buckets[idx].pop();
+				if (idx != 0) { finished = false; }
+			}
+			mask *= 10;
+		}
+	}
+
+	template <typename Type>
+	void radixSortBucketsVector(std::vector<Type>& vec) {
+		std::vector<std::vector<Type>> buckets(10);
+		long long mask = 10;
+		while (true) {
+			for (auto& bucket : buckets) {
+				bucket.clear();
+			}
+			for (int i = 0; i < vec.size(); i++) {
+				int digit = (vec[i] % mask) / (mask / 10);
+				buckets[digit].push_back(vec[i]);
+			}
+			if (buckets[0].size() == vec.size()) { break; }
+			int idx = 0;
+			for (int i = 0; i < 10; i++) {
+				for (int j = 0; j < buckets[i].size(); j++) {
+					vec[idx] = buckets[i][j];
+					idx++;
+				}
+			}
+			mask *= 10;
+		}
+	}
+	
+	template <typename Type>
+	void radixSortCountsBase2(std::vector<Type>& vec) {
+		int exp = 16;
+		int base = 1 << exp;
+		std::vector<int> counts(base);
+		std::vector<Type> aux(vec.size());
+		long long mask = base - 1;
+		int iter = 1;
+		while (true) {
+			counts = std::vector<int>(base, 0);
+			for (int i = 0; i < vec.size(); i++) {
+				int digit = ((vec[i] & mask)>>((iter-1)*exp));
+				counts[digit]++;
+			}
+			if (counts[0] == vec.size()) { break; }
+			prefix_sum(counts);
+			for (int i = vec.size() - 1; i >= 0; i--) {
+				int digit = ((vec[i] & mask) >> ((iter - 1) * exp));
+				counts[digit]--;
+				aux[counts[digit]] = vec[i];
+			}
+			vec = aux;
+			mask = mask << exp;
+			iter++;
+		}
+	}
+
+	template <typename Type>
+	void radixSortBucketsVectorBase2(std::vector<Type>& vec) {
+		int exp = 16;
+		int base = 1 << exp;
+		std::vector<std::vector<Type>> buckets(base);
+		long long mask = base - 1;
+		int iter = 1;
+		while (true) {
+			for (auto& bucket : buckets) {
+				bucket.clear();
+			}
+			for (int i = 0; i < vec.size(); i++) {
+				int digit = ((vec[i] & mask) >> ((iter - 1) * exp));
+				buckets[digit].push_back(vec[i]);
+			}
+			if (buckets[0].size() == vec.size()) { break; }
+			int idx = 0;
+			for (int i = 0; i < base; i++) {
+				for (int j = 0; j < buckets[i].size(); j++) {
+					vec[idx] = buckets[i][j];
+					idx++;
+				}
+			}
+			mask = mask << exp;
+			iter++;
+		}
+	}
+
 }
+
 
 
 template <typename Type>
@@ -241,17 +422,21 @@ bool test_sort(std::vector<Type>& numbers, std::vector<Type>& sorted_numbers) {
 	return true;
 }
 
+int main(){
 
-
-int main()
-{
-	//sorts.push_back({ "Bubble1",&Bubble::bubbleSort});
+	//sorts.push_back({ "Bubble1",&Bubble::bubbleSort}); 
 	//sorts.push_back({ "Bubble2",&Bubble::bubbleSort2 });
 	//sorts.push_back({ "Insert",&Insertion::insertionSort });
+	
 	sorts.push_back({ "Quick", &Quick::quickSort });
 	sorts.push_back({ "Shell",&Insertion::shellSort });
 	sorts.push_back({ "Heap ", &Heap::heapSort });
 	sorts.push_back({ "Merge", &Merge::mergeSort });
+	
+	sorts.push_back({ "RadixC", &Radix::radixSortCounts });
+	sorts.push_back({ "RadixC16", &Radix::radixSortCountsBase2 });
+	sorts.push_back({ "RadixBV", &Radix::radixSortBucketsVector });
+	sorts.push_back({ "RadixBV16", &Radix::radixSortBucketsVectorBase2 });
 
 	int nr_of_tests, n;
 	long long int maxi;
@@ -259,37 +444,47 @@ int main()
 	for (int i = 0; i < nr_of_tests; i++) {
 		in >> n >> maxi;
 		std::cout << std::endl << " --- Test Nr: " << i << " \tN = " << n << "\tMAX = " << maxi << std::endl;
+		
 		if (maxi < INT32_MAX) {
 			long long x;
+			std::vector<int> numbers;         // will be random numbers
+			std::vector<int> sorted_numbers;  // will be sorted with defaultSort
+			std::vector<int> numbers_to_sort; // will be sorted with various sorts
+
+
 			// generate random numbers
 			std::random_device rd;  // Seed for the random number generator
 			std::mt19937 rng(rd()); // Mersenne Twister engine
-			std::uniform_int_distribution<int> distribution(1, maxi+1);
-
-			std::vector<int> numbers, sorted_numbers, numbers_to_sort;
+			std::uniform_int_distribution<int> distribution(1, maxi+1); // Generator for numbers between 1 and max
 			for (int j = 0; j < n; j++) {
 				//x = rand() % (maxi + 1);
 				x = distribution(rng);
 				numbers.push_back(x);
-				sorted_numbers.push_back(x);
 			}
-			// sort them using default function
+
+
+			// sorting the numbers using default function
+			sorted_numbers = numbers;
 			auto start_time = std::chrono::high_resolution_clock::now();
-			sort(sorted_numbers.begin(), sorted_numbers.end());
+			sort(sorted_numbers.begin(), sorted_numbers.end()); 
 			auto end_time = std::chrono::high_resolution_clock::now();
 			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
 			std::cout << "defaultSort time: " << duration.count() << " miliseconds"<<std::endl;
-			//print(sorted_numbers);
 
-			// sort the with other functions
+
+			// sorting the numbers using other sorting functions
 			for (auto& sort_function : sorts) {
-				numbers_to_sort.clear();
-				numbers_to_sort = numbers;
+				//sort_function has two fieds ( Name, FunctionPointer )
+				std::string name = sort_function.first;
+				auto sortFunction = sort_function.second; // pointer to a function
+				numbers_to_sort.clear(); 
+				numbers_to_sort = numbers; 
+				
 				auto start_time = std::chrono::high_resolution_clock::now();
-				sort_function.second(numbers_to_sort);
+				sortFunction(numbers_to_sort); // calling the pointed function and sorting the numbers "in-place"  
 				auto end_time = std::chrono::high_resolution_clock::now();
 				auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
-				std::cout <<sort_function.first<<"Sort time: " << duration.count() << " miliseconds";
+				std::cout <<name<<"Sort time: " << duration.count() << " miliseconds";
 
 				// check if the sort was correct
 				bool succesful = test_sort(numbers_to_sort, sorted_numbers);
@@ -299,8 +494,11 @@ int main()
 			
 		}
 		else {
+			// this is the branch for long long numbers 
 			std::vector<long long> numbers;
+			// does nothing for now..
 		}
 	}
 	return 0;
 }
+
