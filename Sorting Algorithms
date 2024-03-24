@@ -100,7 +100,37 @@ namespace Quick {
 	template <typename Type>
 	void quick_sort(std::vector<Type>& vec, int l, int r) {
 		if (l < r) {
-			int pivot = r; // pivot selection should be made random
+			int pivot = l + (rand() % (r - l + 1));
+			swap(vec[pivot], vec[r]); // moving the pivot at the end of the vector
+			int j = l - 1;
+			for (int i = l; i < r; i++) {
+				if (vec[i] < vec[r]) {
+					j++;
+					swap(vec[i], vec[j]);
+				}
+			}
+			j++;
+			swap(vec[r], vec[j]); // returning the pivot in it's place
+			// j is the partition point
+			quick_sort(vec, l, j - 1);
+			quick_sort(vec, j + 1, r);
+		}
+	}
+	template <typename Type>
+	void quickSort(std::vector<Type>& vec) {
+		// we need this function, beacause our FunctionPointer points only to functions of this type
+		quick_sort(vec, 0, vec.size() - 1);
+	}
+
+
+
+	template <typename Type>
+	void quick_sort2(std::vector<Type>& vec, int l, int r) {
+		// this function doesn't have a random pivot selection
+		// which will be very bad for semi-sorted inputs
+		// resulting in stack overflow problems
+		if (l < r) {
+			int pivot = r; 
 			int j = l - 1;
 			for (int i = l; i < r; i++) {
 				if (vec[i] < vec[pivot]) {
@@ -111,19 +141,99 @@ namespace Quick {
 			j++;
 			swap(vec[pivot], vec[j]);
 			// j is the partition point
-			quick_sort(vec, l, j - 1);
-			quick_sort(vec, j + 1, r);
+			quick_sort2(vec, l, j - 1);
+			quick_sort2(vec, j + 1, r);
+		}
+	}
+	template <typename Type>
+	void quickSort2(std::vector<Type>& vec) {
+		// we need this function, beacause our FunctionPointer points only to functions of this type
+		quick_sort2(vec, 0, vec.size() - 1);
+	}
+	
+}
+namespace Merge {	
+	
+	template <typename Type>
+	void merge_sort(std::vector<Type>& vec, std::vector<Type>& aux, int l, int r) {
+		if (l < r) {
+			int mid = l + ((r - l) / 2); // finding the mid without overflow
+			//we swap aux with vec beacuse we don't want to do an extra iteration after  
+			merge_sort(aux, vec, l, mid);		
+			merge_sort(aux, vec, mid + 1, r);
+			int i = l;
+			int j = mid + 1;
+			int h = l;
+			while (i <= mid && j <= r) {
+				if (aux[i] < aux[j]) {
+					vec[h] = aux[i];
+					h++; i++;
+				}
+				else {
+					vec[h] = aux[j];
+					h++; j++;
+				}
+			}
+			while (i <= mid) {
+				vec[h] = aux[i];
+				h++; i++;
+			}
+			while (j <= r) {
+				vec[h] = aux[j];
+				h++; j++;
+			}
 		}
 	}
 
 	template <typename Type>
-	void quickSort(std::vector<Type>& vec) {
+	void mergeSort(std::vector<Type>& vec) {
 		// we need this function, beacause our FunctionPointer points only to functions of this type
-		quick_sort(vec, 0, vec.size() - 1);
+		std::vector<Type> aux = vec;
+		merge_sort(vec, aux, 0, vec.size() - 1);
 	}
 
-}
-namespace Merge {
+
+
+	template <typename Type>
+	void merge_sort2(std::vector<Type>& vec, std::vector<Type>& aux, int l, int r) {
+		if (l < r) {
+			int mid = l + ((r - l) / 2); // finding the mid without overflow
+			merge_sort2(vec, aux, l, mid);
+			merge_sort2(vec, aux, mid + 1, r);
+			int i = l;
+			int j = mid + 1;
+			int h = l;
+			while (i <= mid && j <= r) {
+				if (vec[i] < vec[j]) {
+					aux[h] = vec[i];
+					h++; i++;
+				}
+				else {
+					aux[h] = vec[j];
+					h++; j++;
+				}
+			}
+			while (i <= mid) {
+				aux[h] = vec[i];
+				h++; i++;
+			}
+			while (j <= r) {
+				aux[h] = vec[j];
+				h++; j++;
+			}
+			for (int i = l; i <= r; i++) {
+				vec[i] = aux[i];
+			}
+		}
+	}
+	template <typename Type>
+	void mergeSort2(std::vector<Type>& vec) {
+		// we need this function, beacause our FunctionPointer points only to functions of this type
+		std::vector<Type> aux = vec;
+		merge_sort2(vec, aux, 0, vec.size() - 1);
+	}
+
+
 
 	template <typename Type>
 	std::vector<Type> merge(std::vector<Type>& v1, std::vector<Type>& v2) {
@@ -149,26 +259,27 @@ namespace Merge {
 		}
 		return vec;
 	}
-
 	template <typename Type>
-	std::vector<Type> merge_sort(std::vector<Type>& vec, int l, int r) {
+	std::vector<Type> merge_sort_slow(std::vector<Type>& vec, int l, int r) {
 		std::vector<Type> v1, v2;
 		if (l < r) {
 			int mid = l + ((r - l) / 2); // finding the mid without overflow
-			v1 = merge_sort(vec, l, mid);
-			v2 = merge_sort(vec, mid + 1, r);
+			v1 = merge_sort_slow(vec, l, mid);
+			v2 = merge_sort_slow(vec, mid + 1, r);
 			return merge(v1, v2);
 		}
 		else {
 			return { vec[l] }; // a vector with just one element
 		}
 	}
-
 	template <typename Type>
-	void mergeSort(std::vector<Type>& vec) {
+	void mergeSortSlow(std::vector<Type>& vec) {
 		// we need this function, beacause our FunctionPointer points only to functions of this type
-		vec = merge_sort(vec, 0, vec.size() - 1);
+		// 10 times slower beacuse does too much memmory allocation
+		vec = merge_sort_slow(vec, 0, vec.size() - 1);
 	}
+
+
 }
 namespace Heap {
 	
@@ -424,21 +535,25 @@ bool test_sort(std::vector<Type>& numbers, std::vector<Type>& sorted_numbers) {
 
 int main(){
 
+
+
 	//sorts.push_back({ "Bubble1",&Bubble::bubbleSort}); 
 	//sorts.push_back({ "Bubble2",&Bubble::bubbleSort2 });
 	//sorts.push_back({ "Insert",&Insertion::insertionSort });
 	
+	sorts.push_back({ "Merge", &Merge::mergeSort });
 	sorts.push_back({ "Quick", &Quick::quickSort });
 	sorts.push_back({ "Shell",&Insertion::shellSort });
 	sorts.push_back({ "Heap ", &Heap::heapSort });
-	sorts.push_back({ "Merge", &Merge::mergeSort });
 	
-	sorts.push_back({ "RadixC", &Radix::radixSortCounts });
-	sorts.push_back({ "RadixC16", &Radix::radixSortCountsBase2 });
-	sorts.push_back({ "RadixBV", &Radix::radixSortBucketsVector });
-	sorts.push_back({ "RadixBV16", &Radix::radixSortBucketsVectorBase2 });
+	//sorts.push_back({ "RadixC", &Radix::radixSortCounts });
+	//sorts.push_back({ "RadixC16", &Radix::radixSortCountsBase2 });
+	//sorts.push_back({ "RadixBV", &Radix::radixSortBucketsVector });
+	//sorts.push_back({ "RadixBV16", &Radix::radixSortBucketsVectorBase2 });
 
-	int nr_of_tests, n;
+	srand(time(nullptr)); // seed for random number generator
+
+	long long int nr_of_tests, n;
 	long long int maxi;
 	in >> nr_of_tests;
 	for (int i = 0; i < nr_of_tests; i++) {
@@ -457,7 +572,6 @@ int main(){
 			std::mt19937 rng(rd()); // Mersenne Twister engine
 			std::uniform_int_distribution<int> distribution(1, maxi+1); // Generator for numbers between 1 and max
 			for (int j = 0; j < n; j++) {
-				//x = rand() % (maxi + 1);
 				x = distribution(rng);
 				numbers.push_back(x);
 			}
@@ -480,16 +594,24 @@ int main(){
 				numbers_to_sort.clear(); 
 				numbers_to_sort = numbers; 
 				
-				auto start_time = std::chrono::high_resolution_clock::now();
-				sortFunction(numbers_to_sort); // calling the pointed function and sorting the numbers "in-place"  
-				auto end_time = std::chrono::high_resolution_clock::now();
-				auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
-				std::cout <<name<<"Sort time: " << duration.count() << " miliseconds";
+				try {
+					auto start_time = std::chrono::high_resolution_clock::now();
+					sortFunction(numbers_to_sort); // calling the pointed function and sorting the numbers "in-place"  
+					auto end_time = std::chrono::high_resolution_clock::now();
+					auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+					std::cout << name << "Sort time: " << duration.count() << " miliseconds";
 
-				// check if the sort was correct
-				bool succesful = test_sort(numbers_to_sort, sorted_numbers);
-				if (succesful) { std::cout << "\tSuccesful" << std::endl; }
-				else { std::cout << "\tWRONG" << std::endl; }
+					// check if the sort was correct
+					bool succesful = test_sort(numbers_to_sort, sorted_numbers);
+					if (succesful) { std::cout << "\tSuccesful" << std::endl; }
+					else { std::cout << "\tWRONG" << std::endl; }
+				}
+				catch (const std::bad_alloc& e) {
+					std::cout << "\tCould not sort" << std::endl;
+				}
+				catch (...) {
+					std::cout << "\tCould not sort" << std::endl;
+				}
 			}
 			
 		}
