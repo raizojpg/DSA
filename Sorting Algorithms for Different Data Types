@@ -8,7 +8,7 @@
 #include <chrono>  // for time
 
 std::ifstream in("tests.txt");
-//std::ofstream out("results.txt");
+std::ofstream out("results.txt");
 
 // define FunctionPointer datatype 
 //			-> pointing at functions which return void and have a vector<Type> reference as argument
@@ -27,6 +27,8 @@ std::vector<std::pair<std::string, FunctionPointerF>> sortsF;
 
 // vector with pairs ( N, MAX ) 
 std::vector<std::pair<int, long long int>> tests;
+unsigned long long int nr_of_tests, n;
+long long int maxi;
 
 namespace Bubble {
 
@@ -409,7 +411,7 @@ namespace Radix {
 			counts = std::vector<int>(10, 0);
 			for (int i = 0; i < aux.size(); i++) {
 				int digit = (aux[i] % mask) / (mask / 10);
-				//std::cout << digit << std::endl;
+				//out << digit << std::endl;
 				counts[digit]++;
 			}
 			if (counts[0] == aux.size()) { vec = aux; break; }
@@ -525,14 +527,47 @@ namespace Radix {
 	}
 
 }
+namespace Count {
+	
+	template <typename Type>
+	void countNot(std::vector<Type>& vec) {
+		throw 1; // we throw an erorr because it can't sort
+	}
+
+	template <typename Type>
+	void countSort(std::vector<Type>& vec){
+		long long min_element = vec[0];
+		long long max_element = vec[0];
+		for (long long i = 0; i < vec.size(); i++) {
+			if (vec[i] > max_element) { max_element = vec[i]; }
+			else if(vec[i] < min_element) { min_element = vec[i];}
+		}
+		if (max_element - min_element > INT32_MAX / 2) { throw 1; }
+		int size = max_element - min_element + 1;
+		std::vector<long long> aux(size, 0);
+
+		for (long long i = 0; i < vec.size(); i++) {
+			aux[vec[i] - min_element]++;
+		}
+		long long i = 0;
+		for (long long j = 0; j < size; j++) {
+			while (aux[j] > 0) {
+				aux[j]--;
+				vec[i] = min_element + j;
+				i++;
+			}
+		}
+	}
+
+}
 
 
 template <typename Type>
 void print(std::vector<Type>& vec) {
 	for (int j = 0; j < vec.size(); j++) {
-		std::cout << vec[j] << " ";
+		out << vec[j] << " ";
 	}
-	std::cout << std::endl;
+	out << std::endl;
 }
 
 template <typename Type>
@@ -610,7 +645,7 @@ void sortDefault(std::vector<Type>& sorted_numbers) {
 	sort(sorted_numbers.begin(), sorted_numbers.end());
 	auto end_time = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
-	std::cout << "defaultSort time: " << duration.count() << " miliseconds" << std::endl;
+	out << "defaultSort time: " << duration.count() << " miliseconds" << std::endl;
 }
 
 template <typename FunctionPointer , typename Type>
@@ -633,18 +668,18 @@ void iteratingSortingFunctions(std::vector<std::pair<std::string, FunctionPointe
 			sortFunction(numbers_to_sort); // calling the pointed function and sorting the numbers "in-place"  
 			auto end_time = std::chrono::high_resolution_clock::now();
 			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
-			std::cout << name << "Sort time: " << duration.count() << " miliseconds";
+			out << name << "Sort time: " << duration.count() << " miliseconds";
 
 			// check if the sort was correct
 			bool succesful = test_sort(numbers_to_sort, sorted_numbers);
-			if (succesful) { std::cout << "\tSuccesful" << std::endl; }
-			else { std::cout << "\tWRONG" << std::endl; }
+			if (succesful) { out << "\tSuccesful" << std::endl; }
+			else { out << "\tWRONG" << std::endl; }
 		}
 		catch (const std::bad_alloc& e) {
-			std::cout << name << "\tcould not sort, you don't have enough memory" << std::endl;
+			out << name << "\tcould not sort, you don't have enough memory" << std::endl;
 		}
 		catch (...) {
-			std::cout << name << "\tcould not sort" << std::endl;
+			out << name << "\tcould not sort" << std::endl;
 		}
 	}
 }
@@ -695,6 +730,7 @@ void init_sorts() {
 	sortsUI.push_back({ "RadixC16", &Radix::radixSortCountsBase2 });
 	sortsUI.push_back({ "RadixBV", &Radix::radixSortBucketsVector });
 	sortsUI.push_back({ "RadixBV16", &Radix::radixSortBucketsVectorBase2 });
+	sortsUI.push_back({ "Counting", &Count::countSort });
 
 	// Initializing sorts for unsigned long long
 	sortsULL.push_back({ "Merge", &Merge::mergeSort });
@@ -705,27 +741,32 @@ void init_sorts() {
 	sortsULL.push_back({ "RadixC16", &Radix::radixSortCountsBase2 });
 	sortsULL.push_back({ "RadixBV", &Radix::radixSortBucketsVector });
 	sortsULL.push_back({ "RadixBV16", &Radix::radixSortBucketsVectorBase2 });
+	sortsULL.push_back({ "Counting", &Count::countSort });
 
 	// Initializing sorts for int
 	sortsI.push_back({ "Merge", &Merge::mergeSort });
 	sortsI.push_back({ "Quick", &Quick::quickSort });
 	sortsI.push_back({ "Shell",&Insertion::shellSort });
 	sortsI.push_back({ "Heap ", &Heap::heapSort });
-	sortsI.push_back({ "Radix", &Radix::radixNot});
+	sortsI.push_back({ "Radix   ", &Radix::radixNot});
+	sortsI.push_back({ "Counting", &Count::countSort });
 
 	// Initializing sorts for long long
 	sortsLL.push_back({ "Merge", &Merge::mergeSort });
 	sortsLL.push_back({ "Quick", &Quick::quickSort });
 	sortsLL.push_back({ "Shell",&Insertion::shellSort });
 	sortsLL.push_back({ "Heap ", &Heap::heapSort });
-	sortsLL.push_back({ "Radix", &Radix::radixNot });
+	sortsLL.push_back({ "Radix   ", &Radix::radixNot });
+	sortsLL.push_back({ "Counting", &Count::countSort });
 
 	// Initializing sorts for float
 	sortsF.push_back({ "Merge", &Merge::mergeSort });
 	sortsF.push_back({ "Quick", &Quick::quickSort });
 	sortsF.push_back({ "Shell",&Insertion::shellSort });
 	sortsF.push_back({ "Heap ", &Heap::heapSort });
-	sortsF.push_back({ "Radix", &Radix::radixNot });
+	sortsF.push_back({ "Radix   ", &Radix::radixNot });
+	sortsF.push_back({ "Counting", &Count::countNot });
+	
 }
 
 int main(){
@@ -733,52 +774,56 @@ int main(){
 	init_sorts();
 
 	srand(time(nullptr)); // seed for random number generator
+	//try opening the file
+	if (in.is_open()) {
+		in >> nr_of_tests;
+		for (int i = 0; i < nr_of_tests; i++) {
+			in >> n >> maxi;
+			out << std::endl << " --- TEST NR: " << i << " \tN = " << n << "\tMAX = " << maxi << std::endl;
+			try {
+				if (0 < n && n < INT64_MAX - 2) {
+					if (INT32_MIN + 2 < maxi && maxi < INT32_MAX - 2) {
 
-	unsigned long long int nr_of_tests, n;
-	long long int maxi;
-	in >> nr_of_tests;
-	for (int i = 0; i < nr_of_tests; i++) {
-		in >> n >> maxi;
-		std::cout << std::endl << " --- TEST NR: " << i << " \tN = " << n << "\tMAX = " << maxi << std::endl;
-		try {
-			if (0 < n && n < INT64_MAX - 2) {
-				if (INT32_MIN + 2 < maxi && maxi < INT32_MAX - 2) {
+						out << "\n --- Sorting unsigned int values --- \n";
+						sortingUnsignedInt(n, maxi);
+						out << "\n ------------------------------\n";
 
-					std::cout << "\n --- Sorting unsigned int values --- \n";
-					sortingUnsignedInt(n, maxi);
-					std::cout << "\n ------------------------------\n";
+						out << "\n --- Sorting int values --- \n";
+						sortingInt(n, maxi);
+						out << "\n ------------------------------\n";
 
-					std::cout << "\n --- Sorting int values --- \n";
-					sortingInt(n, maxi);
-					std::cout << "\n ------------------------------\n";
+						out << "\n --- Sorting float values --- \n";
+						sortingFloat(n, maxi);
+						out << "\n ------------------------------\n";
 
-					std::cout << "\n --- Sorting float values --- \n";
-					sortingFloat(n, maxi);
-					std::cout << "\n ------------------------------\n";
+					}
+					else if (INT64_MIN + 2 < maxi && maxi < INT64_MAX - 2) {
 
-				}
-				else if (INT64_MIN + 2 < maxi && maxi < INT64_MAX - 2) {
+						out << "\n --- Sorting unsigned long long values --- \n";
+						sortingUnsignedLongLong(n, maxi);
+						out << "\n ------------------------------\n";
 
-					std::cout << "\n --- Sorting unsigned long long values --- \n";
-					sortingUnsignedLongLong(n, maxi);
-					std::cout << "\n ------------------------------\n";
+						out << "\n --- Sorting long long values --- \n";
+						sortingLongLong(n, maxi);
+						out << "\n ------------------------------\n";
 
-					std::cout << "\n --- Sorting long long values --- \n";
-					sortingLongLong(n, maxi);
-					std::cout << "\n ------------------------------\n";
-
+					}
+					else {
+						throw 1; // we throw an exception 
+					}
 				}
 				else {
-					throw 1; // we throw an exception 
+					throw 1; // we throw an exception
 				}
 			}
-			else {
-				throw 1; // we throw an exception
+			catch (...) {
+				out << "We could not process this input :( \n";
 			}
 		}
-		catch (...) {
-			std::cout << "We could not process this input :( \n";
-		}
+		in.close();
+	}
+	else {
+		out << "Could not open the file\n";
 	}
 	return 0;
 }
