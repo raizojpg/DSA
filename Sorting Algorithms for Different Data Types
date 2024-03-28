@@ -1,3 +1,7 @@
+// Soare Alex Antonio 151
+// Grigorascu Andrei Antonio 151
+// Serbanescu George Florin 151
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -526,6 +530,78 @@ namespace Radix {
 		}
 	}
 
+	template <typename Type>
+	void radixSortCountsSigned(std::vector<Type>& vec) {
+		std::vector<Type> negative, pozitive;
+		for (auto val : vec) {
+			if (val < 0) { negative.push_back((-1) * val); }
+			else { pozitive.push_back(val); }
+		}
+		radixSortCounts(negative);
+		radixSortCounts(pozitive);
+		long long i = 0;
+		for (long long j = negative.size() - 1; j >= 0; j--) {
+			vec[i++] = (-1) * negative[j];
+		}
+		for (long long j = 0; j < pozitive.size(); j++) {
+			vec[i++] = pozitive[j];
+		}
+	}
+
+	template <typename Type>
+	void radixSortBucketsVectorSigned(std::vector<Type>& vec) {
+		std::vector<Type> negative, pozitive;
+		for (auto val : vec) {
+			if (val < 0) { negative.push_back((-1) * val); }
+			else { pozitive.push_back(val); }
+		}
+		radixSortBucketsVector(negative);
+		radixSortBucketsVector(pozitive);
+		long long i = 0;
+		for (long long j = negative.size() - 1; j >= 0; j--) {
+			vec[i++] = (-1) * negative[j];
+		}
+		for (long long j = 0; j < pozitive.size(); j++) {
+			vec[i++] = pozitive[j];
+		}
+	}
+
+	template <typename Type>
+	void radixSortCountsBase2Signed(std::vector<Type>& vec) {
+		std::vector<Type> negative, pozitive;
+		for (auto val : vec) {
+			if (val < 0) { negative.push_back((-1) * val); }
+			else { pozitive.push_back(val); }
+		}
+		radixSortCountsBase2(negative);
+		radixSortCountsBase2(pozitive);
+		long long i = 0;
+		for (long long j = negative.size() - 1; j >= 0; j--) {
+			vec[i++] = (-1) * negative[j];
+		}
+		for (long long j = 0; j < pozitive.size(); j++) {
+			vec[i++] = pozitive[j];
+		}
+	}
+
+	template <typename Type>
+	void radixSortBucketsVectorBase2Signed(std::vector<Type>& vec) {
+		std::vector<Type> negative, pozitive;
+		for (auto val : vec) {
+			if (val < 0) { negative.push_back((-1) * val); }
+			else { pozitive.push_back(val); }
+		}
+		radixSortBucketsVectorBase2(negative);
+		radixSortBucketsVectorBase2(pozitive);
+		long long i = 0;
+		for (long long j = negative.size() - 1; j >= 0; j--) {
+			vec[i++] = (-1) * negative[j];
+		}
+		for (long long j = 0; j < pozitive.size(); j++) {
+			vec[i++] = pozitive[j];
+		}
+	}
+
 }
 namespace Count {
 	
@@ -748,7 +824,10 @@ void init_sorts() {
 	sortsI.push_back({ "Quick", &Quick::quickSort });
 	sortsI.push_back({ "Shell",&Insertion::shellSort });
 	sortsI.push_back({ "Heap ", &Heap::heapSort });
-	sortsI.push_back({ "Radix   ", &Radix::radixNot});
+	sortsI.push_back({ "RadixC", &Radix::radixSortCountsSigned });
+	sortsI.push_back({ "RadixC16", &Radix::radixSortCountsBase2Signed });
+	sortsI.push_back({ "RadixBV", &Radix::radixSortBucketsVectorSigned });
+	sortsI.push_back({ "RadixBV16", &Radix::radixSortBucketsVectorBase2Signed });
 	sortsI.push_back({ "Counting", &Count::countSort });
 
 	// Initializing sorts for long long
@@ -756,7 +835,10 @@ void init_sorts() {
 	sortsLL.push_back({ "Quick", &Quick::quickSort });
 	sortsLL.push_back({ "Shell",&Insertion::shellSort });
 	sortsLL.push_back({ "Heap ", &Heap::heapSort });
-	sortsLL.push_back({ "Radix   ", &Radix::radixNot });
+	sortsLL.push_back({ "RadixC", &Radix::radixSortCountsSigned });
+	sortsLL.push_back({ "RadixC16", &Radix::radixSortCountsBase2Signed });
+	sortsLL.push_back({ "RadixBV", &Radix::radixSortBucketsVectorSigned });
+	sortsLL.push_back({ "RadixBV16", &Radix::radixSortBucketsVectorBase2Signed });
 	sortsLL.push_back({ "Counting", &Count::countSort });
 
 	// Initializing sorts for float
