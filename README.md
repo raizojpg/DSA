@@ -1,4 +1,4 @@
-  - Algoritmi de Sortare -  
+**Algoritmi de Sortare**  
 
 Proiect realizat de :
  - Soare Alex Antonio (Grupa 151)
