@@ -1,0 +1,71 @@
+ --- TEST NR: 6 	N = 10000000	MAX = 1000000000000
+
+ --- Sorting unsigned long long values --- 
+defaultSort time: 3020 miliseconds
+MergeSort time: 2886 miliseconds	Succesful
+QuickSort time: 2988 miliseconds	Succesful
+ShellSort time: 7921 miliseconds	Succesful
+Heap Sort time: 8421 miliseconds	Succesful
+RadixCSort time: 3635 miliseconds	Succesful
+RadixC16Sort time: 931 miliseconds	Succesful
+RadixBVSort time: 3623 miliseconds	Succesful
+RadixBV16Sort time: 1630 miliseconds	Succesful
+Counting	could not sort
+
+ ------------------------------
+
+ --- Sorting long long values --- 
+defaultSort time: 3000 miliseconds
+MergeSort time: 2896 miliseconds	Succesful
+QuickSort time: 3092 miliseconds	Succesful
+ShellSort time: 8059 miliseconds	Succesful
+Heap Sort time: 8736 miliseconds	Succesful
+RadixCSort time: 4074 miliseconds	Succesful
+RadixC16Sort time: 1139 miliseconds	Succesful
+RadixBVSort time: 4128 miliseconds	Succesful
+RadixBV16Sort time: 1926 miliseconds	Succesful
+Counting	could not sort
+
+ ------------------------------
+
+ --- TEST NR: 7 	N = 100000000	MAX = 10000
+
+ --- Sorting unsigned int values --- 
+defaultSort time: 29897 miliseconds
+MergeSort time: 60874 miliseconds	Succesful
+QuickSort time: 41404 miliseconds	Succesful
+ShellSort time: 195363 miliseconds	Succesful
+Heap Sort time: 504816 miliseconds	Succesful
+RadixCSort time: 145099 miliseconds	Succesful
+RadixC16Sort time: 20138 miliseconds	Succesful
+RadixBVSort time: 198836 miliseconds	Succesful
+RadixBV16Sort time: 34484 miliseconds	Succesful
+CountingSort time: 3872 miliseconds	Succesful
+
+ ------------------------------
+
+--- TEST NR: 8 		N = 100000000	MAX = 200000000000
+
+ --- Sorting unsigned long long values --- 
+defaultSort time: 53408 miliseconds
+MergeSort time: 56539 miliseconds	Succesful
+QuickSort time: 57400 miliseconds	Succesful
+ShellSort time: 231706 miliseconds	Succesful
+Heap Sort time: 258340 miliseconds	Succesful
+RadixCSort time: 41081 miliseconds	Succesful
+RadixC16Sort time: 12892 miliseconds	Succesful
+RadixBVSort time: 111889 miliseconds	Succesful
+
+------------------------------
+
+ --- TEST NR: 9 	N = 1000000000	MAX = 10000000000
+
+ --- Sorting unsigned long long values --- 
+defaultSort time: 1032037 miliseconds
+MergeSort time: 866791 miliseconds	Succesful
+QuickSort time: 769329 miliseconds	Succesful
+ShellSort time: 4783132 miliseconds	Succesful
+Heap Sort time: 4200822 miliseconds	Succesful
+RadixCSort time: 1887054 miliseconds	Succesful
+RadixC16Sort time: 982865 miliseconds	Succesful
+

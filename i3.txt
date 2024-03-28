@@ -1,0 +1,205 @@
+--- TEST NR: 1 	N = 10000	MAX = 100000
+
+ --- Sorting unsigned int values --- 
+defaultSort time: 3 miliseconds
+MergeSort time: 4 miliseconds		Succesful
+QuickSort time: 8 miliseconds		Succesful
+ShellSort time: 11 miliseconds		Succesful
+Heap Sort time: 24 miliseconds		Succesful
+RadixCSort time: 2 miliseconds		Succesful
+RadixC16Sort time: 3 miliseconds	Succesful
+RadixBVSort time: 4 miliseconds		Succesful
+RadixBV16Sort time: 68 miliseconds	Succesful
+CountingSort time: 1 miliseconds	Succesful
+
+ ------------------------------
+
+ --- Sorting int values --- 
+defaultSort time: 29 miliseconds
+MergeSort time: 7 miliseconds		Succesful
+QuickSort time: 9 miliseconds		Succesful
+ShellSort time: 35 miliseconds		Succesful
+Heap Sort time: 20 miliseconds		Succesful
+RadixCSort time: 4 miliseconds		Succesful
+RadixC16Sort time: 14 miliseconds	Succesful
+RadixBVSort time: 17 miliseconds	Succesful
+RadixBV16Sort time: 279 miliseconds	Succesful
+CountingSort time: 3 miliseconds	Succesful
+
+ ------------------------------
+
+ --- Sorting float values --- 
+defaultSort time: 17 miliseconds
+MergeSort time: 7 miliseconds		Succesful
+QuickSort time: 12 miliseconds		Succesful
+ShellSort time: 26 miliseconds		Succesful
+Heap Sort time: 25 miliseconds		Succesful
+Radix   	could not sort
+Counting	could not sort
+
+ ------------------------------
+
+--- TEST NR: 2 	N = 100000	MAX = 1000000
+
+ --- Sorting unsigned int values --- 
+defaultSort time: 57 miliseconds
+MergeSort time: 49 miliseconds		Succesful
+QuickSort time: 49 miliseconds		Succesful
+ShellSort time: 99 miliseconds		Succesful
+Heap Sort time: 177 miliseconds		Succesful
+RadixCSort time: 22 miliseconds		Succesful
+RadixC16Sort time: 11 miliseconds	Succesful
+RadixBVSort time: 55 miliseconds	Succesful
+RadixBV16Sort time: 97 miliseconds	Succesful
+CountingSort time: 13 miliseconds	Succesful
+
+ ------------------------------
+
+ --- Sorting int values --- 
+defaultSort time: 27 miliseconds
+MergeSort time: 38 miliseconds		Succesful
+QuickSort time: 32 miliseconds		Succesful
+ShellSort time: 66 miliseconds		Succesful
+Heap Sort time: 115 miliseconds		Succesful
+RadixCSort time: 24 miliseconds		Succesful
+RadixC16Sort time: 18 miliseconds	Succesful
+RadixBVSort time: 56 miliseconds	Succesful
+RadixBV16Sort time: 127 miliseconds	Succesful
+CountingSort time: 20 miliseconds	Succesful
+
+ ------------------------------
+
+ --- Sorting float values --- 
+defaultSort time: 28 miliseconds
+MergeSort time: 31 miliseconds		Succesful
+QuickSort time: 34 miliseconds		Succesful
+ShellSort time: 65 miliseconds		Succesful
+Heap Sort time: 115 miliseconds		Succesful
+Radix   	could not sort
+Counting	could not sort
+
+ ------------------------------
+
+--- TEST NR: 3 	N = 1000000	MAX = 10000
+
+ --- Sorting unsigned int values --- 
+defaultSort time: 222 miliseconds
+MergeSort time: 360 miliseconds		Succesful
+QuickSort time: 272 miliseconds		Succesful
+ShellSort time: 867 miliseconds		Succesful
+Heap Sort time: 1301 miliseconds	Succesful
+RadixCSort time: 154 miliseconds	Succesful
+RadixC16Sort time: 41 miliseconds	Succesful
+RadixBVSort time: 437 miliseconds	Succesful
+RadixBV16Sort time: 212 miliseconds	Succesful
+CountingSort time: 31 miliseconds	Succesful
+
+ ------------------------------
+
+ --- Sorting int values --- 
+defaultSort time: 237 miliseconds
+MergeSort time: 366 miliseconds		Succesful
+QuickSort time: 296 miliseconds		Succesful
+ShellSort time: 821 miliseconds		Succesful
+Heap Sort time: 1271 miliseconds	Succesful
+RadixCSort time: 223 miliseconds	Succesful
+RadixC16Sort time: 106 miliseconds	Succesful
+RadixBVSort time: 500 miliseconds	Succesful
+RadixBV16Sort time: 339 miliseconds	Succesful
+CountingSort time: 29 miliseconds	Succesful
+
+ ------------------------------
+
+ --- Sorting float values --- 
+defaultSort time: 353 miliseconds
+MergeSort time: 377 miliseconds		Succesful
+QuickSort time: 430 miliseconds		Succesful
+ShellSort time: 910 miliseconds		Succesful
+Heap Sort time: 1300 miliseconds	Succesful
+Radix   	could not sort
+Counting	could not sort
+
+ ------------------------------
+
+--- TEST NR: 4 	N = 1000000	MAX = 100000000
+
+ --- Sorting unsigned int values --- 
+defaultSort time: 356 miliseconds
+MergeSort time: 385 miliseconds		Succesful
+QuickSort time: 408 miliseconds		Succesful
+ShellSort time: 970 miliseconds		Succesful
+Heap Sort time: 1412 miliseconds	Succesful
+RadixCSort time: 265 miliseconds	Succesful
+RadixC16Sort time: 76 miliseconds	Succesful
+RadixBVSort time: 664 miliseconds	Succesful
+RadixBV16Sort time: 592 miliseconds	Succesful
+CountingSort time: 751 miliseconds	Succesful
+
+ ------------------------------
+
+ --- Sorting int values --- 
+defaultSort time: 529 miliseconds
+MergeSort time: 413 miliseconds		Succesful
+QuickSort time: 425 miliseconds		Succesful
+ShellSort time: 933 miliseconds		Succesful
+Heap Sort time: 1317 miliseconds	Succesful
+RadixCSort time: 548 miliseconds	Succesful
+RadixC16Sort time: 209 miliseconds	Succesful
+RadixBVSort time: 907 miliseconds	Succesful
+RadixBV16Sort time: 1175 miliseconds	Succesful
+CountingSort time: 2689 miliseconds	Succesful
+
+ ------------------------------
+
+ --- Sorting float values --- 
+defaultSort time: 385 miliseconds
+MergeSort time: 447 miliseconds	Succesful
+QuickSort time: 407 miliseconds	Succesful
+ShellSort time: 971 miliseconds	Succesful
+Heap Sort time: 1553 miliseconds	Succesful
+Radix   	could not sort
+Counting	could not sort
+
+ ------------------------------
+
+--- TEST NR: 5 	N = 10000000	MAX = 1000000000
+
+ --- Sorting unsigned int values --- 
+defaultSort time: 4194 miliseconds
+MergeSort time: 4439 miliseconds	Succesful
+QuickSort time: 4784 miliseconds	Succesful
+ShellSort time: 14953 miliseconds	Succesful
+Heap Sort time: 17398 miliseconds	Succesful
+RadixCSort time: 2740 miliseconds	Succesful
+RadixC16Sort time: 742 miliseconds	Succesful
+RadixBVSort time: 7372 miliseconds	Succesful
+RadixBV16Sort time: 3517 miliseconds	Succesful
+CountingSort time: 96774 miliseconds	Succesful
+
+ ------------------------------
+
+ --- Sorting int values --- 
+defaultSort time: 4071 miliseconds
+MergeSort time: 4437 miliseconds	Succesful
+QuickSort time: 4784 miliseconds	Succesful
+ShellSort time: 14228 miliseconds	Succesful
+Heap Sort time: 16149 miliseconds	Succesful
+RadixCSort time: 3480 miliseconds	Succesful
+RadixC16Sort time: 1368 miliseconds	Succesful
+RadixBVSort time: 7937 miliseconds	Succesful
+RadixBV16Sort time: 4538 miliseconds	Succesful
+Counting	could not sort
+
+ ------------------------------
+
+ --- Sorting float values --- 
+defaultSort time: 4074 miliseconds
+MergeSort time: 4395 miliseconds	Succesful
+QuickSort time: 4824 miliseconds	Succesful
+ShellSort time: 13937 miliseconds	Succesful
+Heap Sort time: 16395 miliseconds	Succesful
+Radix   	could not sort
+Counting	could not sort
+
+ ------------------------------
+
