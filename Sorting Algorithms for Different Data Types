@@ -12,7 +12,7 @@
 #include <chrono>  // for time
 
 std::ifstream in("tests.txt");
-std::ofstream out("results10.txt");
+std::ofstream out("results.txt");
 
 // define FunctionPointer datatype 
 //			-> pointing at functions which return void and have a vector<Type> reference as argument
@@ -31,11 +31,11 @@ std::vector<std::pair<std::string, FunctionPointerF>> sortsF;
 
 // vector with pairs ( N, MAX ) 
 std::vector<std::pair<int, long long int>> tests;
-unsigned long long int nr_of_tests, n;
+long long int nr_of_tests, n;
 long long int maxi;
 
 namespace Bubble {
-
+	/*
 	template <typename Type>
 	void swap(Type& x, Type& y) {
 		Type z = x;
@@ -67,10 +67,10 @@ namespace Bubble {
 			}
 		}
 	}
-
+	*/
 }
 namespace Insertion {
-
+	/*
 	template <typename Type>
 	void insertionSort(std::vector<Type>& vec) {
 		for (int i = 1; i < vec.size(); i++) {
@@ -83,6 +83,7 @@ namespace Insertion {
 			vec[j + 1] = x;
 		}
 	}
+	*/
 
 	template <typename Type>
 	void shellSort(std::vector<Type>& vec) {
@@ -138,8 +139,7 @@ namespace Quick {
 		quick_sort(vec, 0, vec.size() - 1);
 	}
 
-
-
+	/*
 	template <typename Type>
 	void quick_sort2(std::vector<Type>& vec, long long l, long long r) {
 		// this function doesn't have a random pivot selection
@@ -166,7 +166,7 @@ namespace Quick {
 		// we need this function, beacause our FunctionPointer points only to functions of this type
 		quick_sort2(vec, 0, vec.size() - 1);
 	}
-
+	*/
 }
 namespace Merge {
 
@@ -208,8 +208,7 @@ namespace Merge {
 		merge_sort(vec, aux, 0, vec.size() - 1);
 	}
 
-
-
+	/*
 	template <typename Type>
 	void merge_sort2(std::vector<Type>& vec, std::vector<Type>& aux, long long l, long long r) {
 		if (l < r) {
@@ -294,6 +293,7 @@ namespace Merge {
 		vec = merge_sort_slow(vec, 0, vec.size() - 1);
 	}
 
+	*/
 
 }
 namespace Heap {
@@ -394,66 +394,7 @@ namespace Radix {
 			mask *= 10;
 		}
 	}
-
-	template <typename Type>	//it seems that this is not semnificativley faster, so we won't use it
-	void radixSortCounts2(std::vector<Type>& vec) {
-		std::vector<long long> counts(10, 0);
-		std::vector<Type> aux(vec.size());
-		long long mask = 10;
-		while (true) {
-			counts = std::vector<long long>(10, 0);
-			for (long long i = 0; i < vec.size(); i++) {
-				int digit = (vec[i] % mask) / (mask / 10);
-				counts[digit]++;
-			}
-			if (counts[0] == vec.size()) { break; }
-			prefix_sum(counts);
-			for (long long i = vec.size() - 1; i >= 0; i--) {
-				int digit = (vec[i] % mask) / (mask / 10);
-				counts[digit]--;
-				aux[counts[digit]] = vec[i];
-			}
-			mask *= 10;
-			//to prevent redundant copying we will compute the next iteration from aux
-			counts = std::vector<long long>(10, 0);
-			for (long long i = 0; i < aux.size(); i++) {
-				int digit = (aux[i] % mask) / (mask / 10);
-				//out << digit << std::endl;
-				counts[digit]++;
-			}
-			if (counts[0] == aux.size()) { vec = aux; break; }
-			prefix_sum(counts);
-			for (long long i = aux.size() - 1; i >= 0; i--) {
-				int digit = (aux[i] % mask) / (mask / 10);
-				counts[digit]--;
-				vec[counts[digit]] = aux[i];
-			}
-			mask *= 10;
-		}
-	}
-
-	template <typename Type>	// 5 times slower than the vector variant, so we won't use it
-	void radixSortBucketsQueue(std::vector<Type>& vec) {
-		std::vector<std::queue<Type>> buckets(10);
-		long long mask = 10;
-		bool finished = false;
-		while (!finished) {
-			finished = true;
-			for (long long i = 0; i < vec.size(); i++) {
-				int digit = (vec[i] % mask) / (mask / 10);
-				buckets[digit].push(vec[i]);
-			}
-			long long idx = 0;
-			for (long long i = 0; i < vec.size(); i++) {
-				while (buckets[idx].empty()) { idx++; }
-				vec[i] = buckets[idx].front();
-				buckets[idx].pop();
-				if (idx != 0) { finished = false; }
-			}
-			mask *= 10;
-		}
-	}
-
+	
 	template <typename Type>
 	void radixSortBucketsVector(std::vector<Type>& vec) {
 		std::vector<std::vector<Type>> buckets(10);
@@ -605,6 +546,67 @@ namespace Radix {
 		}
 	}
 
+	/*
+	template <typename Type>	//it seems that this is not semnificativley faster, so we won't use it
+	void radixSortCounts2(std::vector<Type>& vec) {
+		std::vector<long long> counts(10, 0);
+		std::vector<Type> aux(vec.size());
+		long long mask = 10;
+		while (true) {
+			counts = std::vector<long long>(10, 0);
+			for (long long i = 0; i < vec.size(); i++) {
+				int digit = (vec[i] % mask) / (mask / 10);
+				counts[digit]++;
+			}
+			if (counts[0] == vec.size()) { break; }
+			prefix_sum(counts);
+			for (long long i = vec.size() - 1; i >= 0; i--) {
+				int digit = (vec[i] % mask) / (mask / 10);
+				counts[digit]--;
+				aux[counts[digit]] = vec[i];
+			}
+			mask *= 10;
+			//to prevent redundant copying we will compute the next iteration from aux
+			counts = std::vector<long long>(10, 0);
+			for (long long i = 0; i < aux.size(); i++) {
+				int digit = (aux[i] % mask) / (mask / 10);
+				//out << digit << std::endl;
+				counts[digit]++;
+			}
+			if (counts[0] == aux.size()) { vec = aux; break; }
+			prefix_sum(counts);
+			for (long long i = aux.size() - 1; i >= 0; i--) {
+				int digit = (aux[i] % mask) / (mask / 10);
+				counts[digit]--;
+				vec[counts[digit]] = aux[i];
+			}
+			mask *= 10;
+		}
+	}
+
+	template <typename Type>	// 5 times slower than the vector variant, so we won't use it
+	void radixSortBucketsQueue(std::vector<Type>& vec) {
+		std::vector<std::queue<Type>> buckets(10);
+		long long mask = 10;
+		bool finished = false;
+		while (!finished) {
+			finished = true;
+			for (long long i = 0; i < vec.size(); i++) {
+				int digit = (vec[i] % mask) / (mask / 10);
+				buckets[digit].push(vec[i]);
+			}
+			long long idx = 0;
+			for (long long i = 0; i < vec.size(); i++) {
+				while (buckets[idx].empty()) { idx++; }
+				vec[i] = buckets[idx].front();
+				buckets[idx].pop();
+				if (idx != 0) { finished = false; }
+			}
+			mask *= 10;
+		}
+	}
+	*/
+
 }
 namespace Count {
 
@@ -640,7 +642,7 @@ namespace Count {
 
 }
 
-
+/*
 template <typename Type>
 void print(std::vector<Type>& vec) {
 	for (int j = 0; j < vec.size(); j++) {
@@ -648,6 +650,7 @@ void print(std::vector<Type>& vec) {
 	}
 	out << std::endl;
 }
+*/
 
 template <typename Type>
 bool test_sort(std::vector<Type>& numbers, std::vector<Type>& sorted_numbers) {
@@ -855,9 +858,7 @@ void init_sorts() {
 }
 
 int main() {
-
 	init_sorts();
-
 	srand(time(nullptr)); // seed for random number generator
 	//try opening the file
 	if (in.is_open()) {
@@ -867,7 +868,7 @@ int main() {
 			out << std::endl << " --- TEST NR: " << i << " \tN = " << n << "\tMAX = " << maxi << std::endl;
 			try {
 				if (0 < n && n < INT64_MAX - 2) {
-					if (INT32_MIN + 2 < maxi && maxi < INT32_MAX - 2) {
+					if (0 < maxi && maxi < INT32_MAX - 2) {
 
 						out << "\n --- Sorting unsigned int values --- \n";
 						sortingUnsignedInt(n, maxi);
@@ -882,7 +883,7 @@ int main() {
 						out << "\n ------------------------------\n";
 
 					}
-					else if (INT64_MIN + 2 < maxi && maxi < INT64_MAX - 2) {
+					else if (0 < maxi && maxi < INT64_MAX - 2) {
 
 						out << "\n --- Sorting unsigned long long values --- \n";
 						sortingUnsignedLongLong(n, maxi);
@@ -911,4 +912,5 @@ int main() {
 		out << "Could not open the file\n";
 	}
 	return 0;
+
 }
